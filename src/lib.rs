@@ -1,8 +1,9 @@
-#![deny(missing_docs, warnings)]
+//#![deny(missing_docs, warnings)]
 
 //! Nullable, lifetime-tracked pointers.
 
 use std::kinds::marker;
+use std::mem;
 
 pub struct Nullable<'a, T: 'a> {
     lifetime: marker::ContravariantLifetime<'a>,
@@ -21,7 +22,7 @@ impl<'a, T> Nullable<'a, T> {
     }
 
     pub fn from_ref(t: &'a T) -> Nullable<'a, T> {
-        Nullable::new(t)
+        unsafe { Nullable::new(t) }
     }
 
     pub unsafe fn deref(&self) -> &'a T {
@@ -43,7 +44,7 @@ impl<'a, T> NullableMut<'a, T> {
     }
 
     pub fn from_mut(t: &'a mut T) -> NullableMut<'a, T> {
-        NullableMut::new(t)
+        unsafe { NullableMut::new(t) }
     }
 
     pub unsafe fn deref(&self) -> &'a T {
