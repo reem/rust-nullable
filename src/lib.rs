@@ -1,12 +1,10 @@
-//#![deny(missing_docs, warnings)]
-
 //! Nullable, lifetime-tracked pointers.
 
-use std::kinds::marker;
+use std::marker;
 use std::mem;
 
 pub struct Nullable<'a, T: 'a> {
-    lifetime: marker::ContravariantLifetime<'a>,
+    lifetime: marker::PhantomData<&'a ()>,
     data: *const T
 }
 
@@ -16,7 +14,7 @@ unsafe impl<'a, T: Sync> Sync for Nullable<'a, T> {}
 impl<'a, T> Nullable<'a, T> {
     pub unsafe fn new(t: *const T) -> Nullable<'a, T> {
         Nullable {
-            lifetime: marker::ContravariantLifetime,
+            lifetime: marker::PhantomData,
             data: t
         }
     }
@@ -31,14 +29,14 @@ impl<'a, T> Nullable<'a, T> {
 }
 
 pub struct NullableMut<'a, T: 'a> {
-    lifetime: marker::ContravariantLifetime<'a>,
+    lifetime: marker::PhantomData<&'a ()>,
     data: *mut T
 }
 
 impl<'a, T> NullableMut<'a, T> {
     pub unsafe fn new(t: *mut T) -> NullableMut<'a, T> {
         NullableMut {
-            lifetime: marker::ContravariantLifetime,
+            lifetime: marker::PhantomData,
             data: t
         }
     }
